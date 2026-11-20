@@ -1,14 +1,12 @@
 {
-  "name": "stadium-seat-view",
+  "name": "utsikt-seat-view",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Interactive 3D preview of the view from a seat in a Gothenburg stadium. Approximate model, not official seat data.",
+  "private": true,
+  "license": "MIT",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "bash build.sh"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "esbuild": "^0.28.2",
     "three": "^0.170.0"
