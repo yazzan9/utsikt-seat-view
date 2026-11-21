@@ -1,6 +1,6 @@
 # Utsikt · Ullevi seat view (Gothenburg)
 
-Interactive 3D tool to preview the view from any seat in a Gothenburg football/concert stadium.
+Interactive 3D tool to preview the view from any seat in Ullevi stadium in Gothenburg. 
 Orbit the stadium, click or search a seat, and see what you would see, by day (football) or night (concert).
 
 **Live demo:** https://yazzan9.github.io/utsikt-seat-view/
