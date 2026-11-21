@@ -916,6 +916,7 @@ const ICONS = {
   route: '<circle cx="6" cy="18" r="2"/><circle cx="18" cy="6" r="2"/><path d="M8 18h7a3 3 0 0 0 0-6H9a3 3 0 0 1 0-6h7"/>',
   back: '<path d="M15 5l-7 7 7 7"/>',
   home: '<path d="M4 11l8-7 8 7"/><path d="M6 10v10h12V10"/><path d="M10 20v-6h4v6"/>',
+  pin: '<path d="M12 21s-6-5.6-6-11a6 6 0 1 1 12 0c0 5.4-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/>',
   spin: '<path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v5h-5"/>',
   target: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/>',
   chevR: '<path d="M9 5l7 7-7 7"/>', chevL: '<path d="M15 5l-7 7 7 7"/>',
@@ -971,7 +972,7 @@ function wayInCard() {
     </ol>
     <label class="wi-ticket"><span>Entrance on your ticket</span><select id="gsel"><option value="">Auto · nearest (${R.rec.label})</option>${GATES.filter(x => !x.floor || s.floor).map(x => `<option value="${x.id}" ${st.gateOverride === x.id ? 'selected' : ''}>${x.label}${x.note ? ' · ' + x.note : ''}</option>`).join('')}</select></label>
     <p class="wi-note">${isRec ? 'Got Event prints the entrance on every ticket and it can change per event. Your ticket always wins.' : `Your ticket says ${g.label}. The nearest entrance would be ${R.rec.label}.`}</p>
-    <button class="ghost wide" data-act="route">${icon('route')}Show my way in on the map</button>
+    <button class="route" data-act="route">${icon('route')}Show my way in on the map</button>
   </div>`;
 }
 function sectionChips() {
@@ -998,7 +999,7 @@ function renderPanel() {
   if (st.sel) {
     const s = st.sel, { r, rows } = insightRows(s);
     const price = s.floor ? PRICES.floor : s.block.price, cat = s.floor ? 'Standing' : 'Kat ' + s.block.cat;
-    h = `<div class="ticket">
+    h = (st.state === 'pov' ? '' : `<button class="primary pov-top" data-act="pov">See the view from here <span>↵</span></button>`) + `<div class="ticket">
       <div class="tk-head"><div><div class="tk-stand">${s.floor ? 'Planen · standing floor' : s.block.stand}</div></div>
         <div class="tk-price">${st.ticket ? `<b>${price} kr</b><span class="chip c${s.floor ? 0 : s.block.cat}">${cat} · demo</span>` : `<span class="chip cv">${s.floor ? 'Standing' : s.tier === 'U' ? 'Upper tier' : 'Lower tier'}</span>`}</div></div>
       ${s.floor ? `<div class="tk-grid one"><div><span>Zone</span><b>${s.pos.x < STAGE.front + 30 ? 'Front' : s.pos.x < 20 ? 'Middle' : 'Back'}</b></div><div><span>From stage</span><b>${Math.round(r.dist)} m</b></div></div>`
@@ -1009,7 +1010,7 @@ function renderPanel() {
     </div>` + (s.floor ? '' : `<div class="chseat"><span class="c-lbl">Change seat</span><div class="chbtns"><button data-step="-1,0">${icon('back')}Prev seat</button><button data-step="1,0">Next seat${icon('chevR')}</button><button data-step="0,-1">Row in front</button><button data-step="0,1">Row behind</button></div></div>`) + wayInCard() +
       (st.state === 'pov'
         ? `<div class="btnrow"><button class="ghost" data-act="copy">${icon('person')}Copy link to this view</button></div>`
-        : `<button class="primary" data-act="pov">See the view from here <span>↵</span></button><div class="btnrow"><button class="ghost" data-act="${st.sel.floor ? 'back' : 'unsel'}">${st.sel.floor ? 'All sections' : 'Pick another seat'}</button></div>`);
+        : `<button class="primary pov-bottom" data-act="pov">See the view from here <span>↵</span></button><div class="btnrow"><button class="ghost" data-act="${st.sel.floor ? 'back' : 'unsel'}">${st.sel.floor ? 'All sections' : 'Pick another seat'}</button></div>`);
   } else if (st.state === 'block' && st.activeBlock) {
     const b = st.activeBlock;
     h = `      <h2>${secName(b)}</h2><p class="sub">${b.stand} · ${b.rows.length} rows${b.unofficial ? ' · unlabelled on the official plan' : ''}</p>
