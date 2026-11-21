@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Utsikt · See your seat at Ullevi before you buy</title>
-<meta name="description" content="Pick any seat at Ullevi and see the view in 3D, sun or shade at kick-off, and the fastest way in.">
+<meta name="description" content="Pick any seat at Ullevi and see the view in 3D, for concerts and football, plus which seats are under the roof and the fastest way in.">
 <meta name="theme-color" content="#0A0D18">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-14 -14 128 128'%3E%3Crect x='-14' y='-14' width='128' height='128' rx='28' fill='%230A0D18'/%3E%3Cpath fill='%23F3EFE4' d='M8 8h16v26h12v28a14 14 0 0 0 28 0V34h12V8h16v42a42 42 0 0 1-84 0z'/%3E%3Ccircle fill='%23A8E6A0' cx='50' cy='56' r='7'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -755,6 +755,21 @@ body.panel-closed .ptoggle{background:var(--ink)!important;color:var(--paper)!im
 @media (prefers-reduced-motion:reduce){#loader .mark .dot{animation:none}.glass,#panel,#cond,#top{transition:none}}
 @media (max-width:860px){.brand .t1{display:block;font-size:21px}.brand .t2{display:none}}
 .q-item.q-bad b,.q-bad .q-ic .ic{color:var(--acc-text)!important}
+/* ---- phone menu: venue tag, view button on top, route button colour ---- */
+button.route{width:100%;border:0;background:var(--hi);color:#0A0D18;border-radius:12px;padding:12px 14px;font-weight:700;font-size:13.5px;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer}
+button.route .ic{color:#0A0D18}
+button.route:hover{filter:brightness(1.06)}
+button.route:focus-visible{outline:2px solid var(--card-ink);outline-offset:2px}
+.venue-tag{display:none}
+button.primary.pov-top{display:none}
+@media (max-width:860px){
+  .venue-tag{display:flex;align-items:center;gap:6px;font:700 12px var(--ui);letter-spacing:.06em;text-transform:uppercase;color:var(--acc-text);margin:2px 2px 10px}
+  .venue-tag .ic{width:14px;height:14px}
+  body:not([data-state=overview]):not([data-state=intro]) .venue-tag{display:none}
+  button.primary.pov-top{display:flex;margin-bottom:12px}
+  button.primary.pov-bottom{display:none}
+}
+
 </style>
 </head>
 <body data-state="intro" data-mode="football">
@@ -781,6 +796,7 @@ body.panel-closed .ptoggle{background:var(--ink)!important;color:var(--paper)!im
 </header>
 <button id="ptoggle" class="ptoggle glass" type="button" aria-controls="panel"></button>
 <aside id="panel" class="glass"><button id="pgrab" class="pgrab" type="button" aria-label="Hide the menu"><i></i></button><div id="navbar" class="navbar"></div><div class="scroll">
+  <div class="venue-tag"><svg viewBox="0 0 24 24" class="ic"><path d="M12 21s-6-5.6-6-11a6 6 0 1 1 12 0c0 5.4-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/></svg>Ullevi · Göteborg</div>
   <div class="search">
     <div class="sbox">
       <svg viewBox="0 0 24 24" class="ic"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
