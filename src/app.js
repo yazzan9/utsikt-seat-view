@@ -584,7 +584,18 @@ function selectSeat(s) {
   const prev = st.sel; st.sel = s; st.rowHint = null;
   if (prev && prev.block && prev.block !== s.block) paintBlock(prev.block);
   st.gateOverride = null; st.routeView = false; updateRoute();
-  paintBlock(s.block); updatePlanColors(); renderPanel(); syncPicker();
+  paintBlock(s.block); updatePlanColors(); renderPanel(); syncPicker(); revealTicket();
+}
+function revealTicket() {
+  if (innerWidth > 860) return;
+  if (document.body.classList.contains('sheet-min')) setSheet(true);
+  requestAnimationFrame(() => {
+    const sc = $('#panel .scroll'), t = $('#ctx .ticket'), btn = t && t.querySelector('.pov-in');
+    if (!sc || !t) return;
+    const box = sc.getBoundingClientRect(), toCard = t.getBoundingClientRect().top - box.top - 12;
+    const toButton = btn ? btn.getBoundingClientRect().bottom - box.bottom + 12 : toCard;
+    sc.scrollTo({ top: sc.scrollTop + Math.max(toCard, toButton), behavior: 'smooth' });
+  });
 }
 function selectFloor(pos) {
   pos.x = clamp(pos.x, STAGE.front + 3, 54); pos.z = clamp(pos.z, -31, 31);
@@ -592,7 +603,7 @@ function selectFloor(pos) {
   const prev = st.sel; st.sel = { floor: true, pos, block: null, n: null };
   if (prev && prev.block) paintBlock(prev.block);
   if (st.state !== 'pov') setState(st.state === 'overview' ? 'block' : st.state);
-  st.activeBlock = null; st.gateOverride = null; updateRoute(); paintAll(); updatePlanColors(); renderPanel();
+  st.activeBlock = null; st.gateOverride = null; updateRoute(); paintAll(); updatePlanColors(); renderPanel(); revealTicket();
   if (st.state === 'block') { const c = pos.clone(); flyTo(new THREE.Vector3(c.x + 45, 30, c.z + 40), c, 42, 1300, () => { controls.enabled = true; }); }
 }
 function goPov(sel, quick = false) {
@@ -999,14 +1010,15 @@ function renderPanel() {
   if (st.sel) {
     const s = st.sel, { r, rows } = insightRows(s);
     const price = s.floor ? PRICES.floor : s.block.price, cat = s.floor ? 'Standing' : 'Kat ' + s.block.cat;
-    h = (st.state === 'pov' ? '' : `<button class="primary pov-top" data-act="pov">See the view from here <span>↵</span></button>`) + `<div class="ticket">
+    h = `<div class="ticket">
       <div class="tk-head"><div><div class="tk-stand">${s.floor ? 'Planen · standing floor' : s.block.stand}</div></div>
         <div class="tk-price">${st.ticket ? `<b>${price} kr</b><span class="chip c${s.floor ? 0 : s.block.cat}">${cat} · demo</span>` : `<span class="chip cv">${s.floor ? 'Standing' : s.tier === 'U' ? 'Upper tier' : 'Lower tier'}</span>`}</div></div>
       ${s.floor ? `<div class="tk-grid one"><div><span>Zone</span><b>${s.pos.x < STAGE.front + 30 ? 'Front' : s.pos.x < 20 ? 'Middle' : 'Back'}</b></div><div><span>From stage</span><b>${Math.round(r.dist)} m</b></div></div>`
         : `<div class="tk-grid"><div><span>Section</span><b>${s.block.name}</b></div><div><span>Row</span><b>${s.row}</b></div><div><span>Seat</span><b>${s.num}</b></div></div>`}
       <div class="tk-score">${gauge(r.score)}<div><b>${label(r.score)} view</b><span>${s.floor ? 'Depends on the crowd in front of you' : r.restricted ? 'Side-on to the stage' : st.mode === 'football' ? 'Scored on distance, side and height' : 'Scored on distance and angle to stage'}</span></div></div>
-      <div class="facts">${rows.map(([k, a, b]) => `<div>${icon(k)}<span>${a}</span><b>${b}</b></div>`).join('')}</div>
+      <div class="facts">${rows.map(([k, a, b]) => `<div data-k="${k}">${icon(k)}<span>${a}</span><b>${b}</b></div>`).join('')}</div>
       ${isTaken(s) && !s.floor ? '<div class="warn">This seat is taken (demo data). You are previewing its view.</div>' : ''}
+      ${st.state === 'pov' ? '' : '<button class="primary pov-in" data-act="pov">See the view from here <span>↵</span></button>'}
     </div>` + (s.floor ? '' : `<div class="chseat"><span class="c-lbl">Change seat</span><div class="chbtns"><button data-step="-1,0">${icon('back')}Prev seat</button><button data-step="1,0">Next seat${icon('chevR')}</button><button data-step="0,-1">Row in front</button><button data-step="0,1">Row behind</button></div></div>`) + wayInCard() +
       (st.state === 'pov'
         ? `<div class="btnrow"><button class="ghost" data-act="copy">${icon('person')}Copy link to this view</button></div>`
